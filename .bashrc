@@ -45,14 +45,15 @@ frpSupportForSSH_start_safe()
 		screen -x -S $frpSupport_ScreenName -p 0 -X stuff "cd $frp_home/$frp_version\n"
 		screen -x -S $frpSupport_ScreenName -p 0 -X stuff "./frpc -c ./frpc.ini\n"
 	fi
-	echo "[info] frp support for ssh have been set, for more information, see \"$home_frp/$frp_version/frpc.ini\""
+	echo "[info] frp support for ssh have been set, for more information, see \"$frp_home/$frp_version/frpc.ini\""
 }
 
 # function: open Minecraft Server
 minecraftServer_start_safe()
 {
 	serverNames=("minecraftServer")
-	frpSupportNames=("minecraftServer_frpSupport")
+	frpSupportNames=("frpSupport_minecraftServer")
+	frpSupport_minecraftServer_configName="frpc_minecraftServer.ini";
 	
 	Screen_check "${serverNames[0]}"
 	if [[ -z $result ]]
@@ -65,7 +66,7 @@ minecraftServer_start_safe()
 		cmds=("cd $home/forge/$version/$forgeVersion/" "./run.sh")
 		cmds_length=2
 		
-		frp_cmds=("cd $frp_home/$frp_version" "./frpc -c ./frpc_minecraftServer.ini")
+		frp_cmds=("cd $frp_home/$frp_version" "./frpc -c ./$frpSupport_minecraftServer_configName")
 		frp_cmds_length=2
 		
 		echo -e "[info] Creating screens...\c"
@@ -89,19 +90,20 @@ minecraftServer_start_safe()
 		done
 		echo "done"
 	fi
+	echo "[info] minecraftServer have been launched, now available on screen \"${serverNames[0]}\""
+	echo "[info] support for minecraftServer have been set, for more information, see \"$frp_home/$frp_version/$frpSupport_minecraftServer_configName\""
 }
 
 # function calls
 
 frpSupportForSSH_start_safe
-sleep 1s
 minecraftServer_start_safe
 
 # ycMia's environment setting
 
 alias java17='/home/ycmia/Environment/jdk-17/bin/java'
 
-export http_proxy=http://127.0.0.1:10809
-export https_proxy=https://127.0.0.1:10809
+# export http_proxy=http://127.0.0.1:10809
+# export https_proxy=https://127.0.0.1:10809
 
 echo "[info] ------ Root's .bashrc end ------"
